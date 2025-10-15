@@ -1,0 +1,82 @@
+{
+  "application": {
+    "name": "Data Processing Pipeline",
+    "version": "1.0.0",
+    "environment": "development"
+  },
+  "database": {
+    "host": "localhost",
+    "port": 5432,
+    "name": "test_database",
+    "connection_timeout": 30,
+    "max_connections": 10
+  },
+  "api": {
+    "base_url": "https://api.example.com/v1",
+    "timeout": 30,
+    "retries": 3,
+    "rate_limit": {
+      "requests_per_minute": 100,
+      "burst_size": 10
+    }
+  },
+  "data_validation": {
+    "max_missing_percentage": 0.1,
+    "required_columns": ["id", "name", "value", "status"],
+    "value_ranges": {
+      "value": {
+        "min": 0,
+        "max": 10000
+      },
+      "id": {
+        "min": 1
+      }
+    },
+    "allowed_statuses": ["active", "inactive", "pending", "archived"]
+  },
+  "data_processing": {
+    "batch_size": 1000,
+    "output_format": "csv",
+    "include_summary": true,
+    "enable_profiling": false,
+    "cleanup_temp_files": true
+  },
+  "logging": {
+    "level": "INFO",
+    "file_path": "logs/application.log",
+    "max_file_size": "10MB",
+    "backup_count": 5,
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  },
+  "monitoring": {
+    "enable_metrics": true,
+    "metrics_endpoint": "/metrics",
+    "alert_thresholds": {
+      "error_rate": 0.05,
+      "response_time_ms": 1000,
+      "memory_usage_mb": 512
+    }
+  },
+  "github_integration": {
+    "repository": "your-username/copilot-studio-test-repo",
+    "branch": "main",
+    "webhook_secret": "your-webhook-secret",
+    "actions": {
+      "auto_trigger_on_push": true,
+      "notify_on_failure": true,
+      "create_issues_on_error": true
+    }
+  },
+  "notification": {
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.example.com",
+      "port": 587,
+      "recipients": ["admin@example.com"]
+    },
+    "slack": {
+      "enabled": false,
+      "webhook_url": "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+    }
+  }
+}
