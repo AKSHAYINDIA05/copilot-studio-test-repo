@@ -1,0 +1,56 @@
+name: Debug Test Failures
+on:
+  workflow_dispatch:
+    inputs:
+      test_pattern:
+        description: 'Test pattern to run (e.g., test_validate_missing_data_threshold)'
+        required: false
+        default: 'tests/'
+      debug_level:
+        description: 'Debug verbosity level'
+        required: true
+        type: choice
+        options:
+        - normal
+        - verbose
+        - debug
+        default: 'verbose'
+
+jobs:
+  debug-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r src/requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Run specific tests with debug info
+      run: |
+        case "${{ github.event.inputs.debug_level }}" in
+          debug)
+            pytest ${{ github.event.inputs.test_pattern }} -v -s --tb=long --capture=no
+            ;;
+          verbose)
+            pytest ${{ github.event.inputs.test_pattern }} -v --tb=short
+            ;;
+          normal)
+            pytest ${{ github.event.inputs.test_pattern }} -v
+            ;;
+        esac
+        
+    - name: Show test environment info
+      if: always()
+      run: |
+        echo "## Debug Information" >> $GITHUB_STEP_SUMMARY
+        echo "- Python version: $(python --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- Pytest version: $(pytest --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- Working directory: $(pwd)" >> $GITHUB_STEP_SUMMARY
+        echo "- Test pattern: ${{ github.event.inputs.test_pattern }}" >> $GITHUB_STEP_SUMMARY
