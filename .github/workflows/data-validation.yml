@@ -1,0 +1,32 @@
+name: Data Validation Pipeline
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'  # Weekdays at 8 AM
+  workflow_dispatch:
+    inputs:
+      data_source:
+        description: 'Data source to validate'
+        required: true
+        default: 'sample_data.csv'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        pip install pandas numpy
+    
+    - name: Validate data integrity
+      run: |
+        python src/data_processor.py --validate data/${{ github.event.inputs.data_source || 'sample_data.csv' }}
+    
+    - name: Generate validation report
+      run: |
+        echo "Data validation completed successfully"
