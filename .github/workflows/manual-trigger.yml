@@ -1,0 +1,29 @@
+name: Manual Operations
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Operation to perform'
+        required: true
+        type: choice
+        options:
+        - cleanup
+        - backup
+        - diagnostics
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+
+jobs:
+  execute:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Execute ${{ github.event.inputs.operation }}
+      run: |
+        echo "Performing ${{ github.event.inputs.operation }} on ${{ github.event.inputs.environment }}"
+        # Add intentional failure for testing
+        if [ "${{ github.event.inputs.operation }}" = "diagnostics" ]; then
+          exit 1
+        fi
