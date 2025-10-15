@@ -1,0 +1,5 @@
+id,name,value,status
+1,Record A,100,active
+2,Record B,200,active
+3,Record C,150,inactive
+4,Record D,300,active
